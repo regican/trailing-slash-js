@@ -1,17 +1,28 @@
 if ( typeof cleanurl != 'function' ) { 
 function cleanurl(val, o){
+	//get options
 	if (typeof o == "undefined"){
 		o = {
+			debug: false,
 			extension: '.php'
 		};
 	}else {
+		if (typeof o.debug == "undefined"){
+			o.debug = false;
+		}
 		if (typeof o.extension == "undefined"){
 			o.extension = '.php';
 		}
 	}
-
+	
+	if (o.debug){
+		console.log('cleanup (');
+		console.log(' - input: '+typeof val + ' ' + val + ', {debug:"'+o.debug+'",extension:"'+o.extension+'"}');
+	}
+	//for small hrefs
 	if (val.length < 4) return val;
 	
+	//format input
 	var val = val.replace(/(\s)+$/, ""), //remove any trailing whitespaces
 		regex = new RegExp("^(https:\\/\\/|http:\\/\\/|\\/\\/|\\/)(.+?)\\/(.*?(\\?|$|#)|\\" + o.extension + ")(.*$)", "i");
 	var url = val.match(regex);
@@ -37,7 +48,9 @@ function cleanurl(val, o){
 		parsed.path = parsed.path.replace(/^\//, ""); //remove starting slash
 		
 		parsed.query = url[5] || false;
-				
+		
+		console.log(parsed);
+		
 		//set first part of return url
 		newURL = parsed.protocol + parsed.domain + '/' + parsed.path;
 		
@@ -47,6 +60,11 @@ function cleanurl(val, o){
 		//append uri query onto url
 		if (parsed.query){
 			newURL += parsed.ext+parsed.query;
+		}
+		
+		if (o.debug){
+			console.log(' - output: '+newURL);
+			console.log(');');
 		}
 		
 		return newURL;
