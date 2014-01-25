@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Trailing Slash - JavaScript version</title>
+</head>
+<body>
+<h2>Trailing Slash - JavaScript version</h2>
+<pre id="a-info">
+     new: <strong class="clean-url" style="color:red"></strong>
+original: <strong class="original-url" style="color:red"></strong>
+</pre>
+<p><strong>Hover over the links below to see how they have been modified</strong></p>
+<ul>
+	<li><a href="https://github.com ">https://github.com</a></li>
+    <li><a href="https://github.com/regican/trailing-slash-js">https://github.com/regican/trailing-slash-js</a></li>
+    <li><a href="http://github.com">http://github.com</a></li>
+    <li><a href="http://github.com/regican?q=test">http://github.com/regican?q=test</a></li>
+    <li><a href="//github.com">//github.com</a></li>
+    <li><a href="//github.com/index.php">//github.com/index.php</a></li>
+    <li><a href="//github.com/index.php?q=test">//github.com/index.php?q=test</a></li>
+    <li><a href="/sample-page/test-1">/sample-page/test-1</a></li>
+    <li><a href="/sample-page/test?q=2">/sample-page/test?q=2</a></li>
+    <li><a href="/sample-page/example.php?q=2">/sample-page/example.php?q=2</a></li>
+    <li><a href="/sample-page/example.php?q=3#hashtag">/sample-page/example.php?q=3#hashtag</a></li>
+    <li><a href="/sample-page/segment_2#hashtag">/sample-page/segment_2#hashtag</a></li>
+    <li><a href="/sample-page/segment_2?q=3#hashtag">/sample-page/segment_2?q=3#hashtag</a></li>
+    <li><a href="/">/</a></li>
+</ul>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="cleanurl.min.js"></script>
+<script>
+//to rewrite urls as soon as window is loaded
+$(window).on("load", function(){
+	
+	//loop through each anchor tag
+	$('a').each(function(){
+		
+		//replace the href attribute of each element
+		$(this).attr('href', cleanurl($(this).attr('href'), {
+								debug: true,
+								extension: '.php'
+							})
+		);
+	});
+	
+	
+	//for example.html demo purposes
+	$('a').hover(function(){
+		$('#a-info .clean-url').html($(this).attr('href'));
+		$('#a-info .original-url').html($(this).html());
+	});
+	$('a').click(function(e){
+		e.preventDefault();
+	});
+});
+</script>
+</body>
+</html>
