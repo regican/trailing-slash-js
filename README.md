@@ -5,20 +5,17 @@ Ensures that a trailing slash is on the passed url
 ###Sample
 function cleanurl(parameters):
    
-   <script>
-   	var url = "https://github.com/regican";
-   		url = cleanurl(url);
-   	
-   </script>
+	<script>
+	var url = "https://github.com/regican";
+		url = cleanurl(url);
+   	</script>
 
 input:  https://github.com/regican
-
 output: https://github.com/regican/
 
 
 ###Method
 function: **`cleanurl`**
-
 parameters:
 1. url that needs to be formatted correctly
 2. options:
