@@ -1,4 +1,4 @@
-Trailing Slash - JavaScript version
+Add Trailing Slash - JavaScript version
 =================
 Ensures that a trailing slash is on the passed url. Supports urls with extensions, query string and hash tags. 
 
