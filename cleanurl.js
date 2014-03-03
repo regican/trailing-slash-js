@@ -1,57 +1,65 @@
-if ( typeof cleanurl != 'function' ) { 
-function cleanurl(val, o){
-	if (typeof o == "undefined"){
-		o = {
-			extension: '.php'
-		};
-	}else {
-		if (typeof o.extension == "undefined"){
-			o.extension = '.php';
-		}
-	}
+if ( typeof cleanurl != 'function' ) {
 
-	if (val.length < 4) return val;
-	
-	var val = val.replace(/(\s)+$/, ""), //remove any trailing whitespaces
-		regex = new RegExp("^(https:\\/\\/|http:\\/\\/|\\/\\/|\\/)(.+?)\\/(.*?(\\?|$|#)|\\" + o.extension + ")(.*$)", "i");
-	var url = val.match(regex);
-	if (!url){
-		url = val.match(/^(https:\/\/|http:\/\/|\/\/|\/)(.*$)/i) || false;	
-	}
+	/*
+	 * Clean URL
+	 * ---
+	 	purpose: 
+	 		to ensure all urls are absolute urls with a trailing slash where needed
+	 		
+	 	input:
+	 		1. (string): url 
+	 		2. (object): 
+	 			- ignore: (array) any domains to ignore
+	 			
+	 	output:
+	 		successful: (string) full url
+	 		unsuccessful: (int) -1
+	 */
+	function cleanurl(url, o){
+		/* ensure url is passed */
+		if (url){
 		
-	if (url){
-		var newURL = '',
-			parsed = [];
+			/* init options */
+			o = (typeof o == "undefined") ? {} : o;
+			o.ignore = (typeof o.ignore == "undefined") ? [] : o.ignore;
 		
-		//break down matched url parts
-		parsed.protocol = url[1] || '';
+			/* init variables and url structure via JS create element */
+			var parsed = {},
+				ignore = 0,
+				url = (function(href){
+					var a = document.createElement('a');
+						a.href = href;
+					return a;
+				})(url);
 		
-		parsed.domain = url[2] || '';
-		parsed.domain = parsed.domain.replace(/\/+$/, ""); //remove trailing slash
+			/* break down parsed url */
+			parsed.protocol = url.protocol || '';
+			parsed.domain 	= url.hostname || '';
+			parsed.path 	= url.pathname || '';
+			parsed.query	= url.search || '';
+			parsed.hash 	= url.hash || '';
 		
-		parsed.path = url[3] || '';
-		parsed.ext = url[4] || '?';
+			/* set ignore flag if current domain is to be ignored */
+			for (var i = 0; i < o.ignore.length; i++){
+				if (parsed.domain.indexOf( o.ignore[i] ) != -1)
+					ignore = 1;
 		
-		parsed.path = parsed.path.replace(parsed.ext,"");
-		parsed.path = parsed.path.replace(/\/+$/, ""); //remove trailing slash
-		parsed.path = parsed.path.replace(/^\//, ""); //remove starting slash
+				/* break from loop once flag is set */
+				if (ignore) break;
+			}
 		
-		parsed.query = url[5] || false;
-				
-		//set first part of return url
-		newURL = parsed.protocol + parsed.domain + '/' + parsed.path;
+			/* add trailing slash */
+			parsed.path = (!ignore && parsed.path.length > 1 && parsed.path.indexOf('.') == -1) ? parsed.path + '/' : parsed.path;
 		
-		//add a trailing slash only if the url is not an actual file with an extension
-		newURL += ((parsed.path != "" && parsed.path.indexOf( o.extension ) == -1) ? '/' : '');
+			/* set final url to be return */
+			parsed.fullURL = parsed.protocol + '//' + parsed.domain + parsed.path + parsed.query + parsed.hash;
 		
-		//append uri query onto url
-		if (parsed.query){
-			newURL += parsed.ext+parsed.query;
+			return parsed.fullURL;
 		}
-		
-		return newURL;
-	}else {
-		return val;	
+	
+		/* return -1 when a url isn't passed into the function */
+		else {
+			return -1;	
+		}
 	}
-}
 };
